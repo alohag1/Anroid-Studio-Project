@@ -78,11 +78,9 @@ class MainActivity : AppCompatActivity() {
             setOnClickListener { restartGame() }
 
             // Добавляем тень для кнопки
-            setShadowLayer(8f, 4f, 4f, 0x80000000.toInt())  // (radius, dx, dy, color)
+            setShadowLayer(8f, 4f, 4f, 0x80000000.toInt())
         }
 
-
-        // Создаем LayoutParams для кнопки, с marginTop 40px
         val buttonParams = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.WRAP_CONTENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
@@ -90,11 +88,10 @@ class MainActivity : AppCompatActivity() {
             topMargin = 40  // Устанавливаем отступ сверху
         }
 
-        restartButton.layoutParams = buttonParams  // Добавляем кнопку в layout
+        restartButton.layoutParams = buttonParams
+        layout.addView(restartButton)
 
-        layout.addView(restartButton)  // Добавляем кнопку в layout
-
-        setContentView(layout)  // Устанавливаем layout как основной вид
+        setContentView(layout)
     }
 
     // Обработчик нажатия на карту
@@ -127,38 +124,36 @@ class MainActivity : AppCompatActivity() {
         val secondCard = openCards[1]
 
         if (firstCard.tag == secondCard.tag) {
-            // Если карты совпали, делаем их некликабельными
-            firstCard.isClickable = false
-            secondCard.isClickable = false
+            // Если карты совпали, делаем их невидимыми
+            firstCard.visibility = View.INVISIBLE
+            secondCard.visibility = View.INVISIBLE
             pairsFound++ // Увеличиваем счетчик найденных пар
         } else {
             // Если карты не совпали, переворачиваем их обратно
             firstCard.setImageResource(R.drawable.back)
             secondCard.setImageResource(R.drawable.back)
         }
+
         openCards.clear()
 
         // Проверяем, все ли пары найдены
         if (pairsFound == cardImages.size / 2) {
-            // Выводим сообщение о победе через кастомный Toast
             showCustomToast("Поздравляю, вы победили!!!")
         }
     }
 
     // Перезапуск игры
     private fun restartGame() {
-        // Сбросить все карты и счетчики
         pairsFound = 0
         openCards.clear()
 
-        // Перемешиваем карты для новой игры
         cardImages.shuffle()
 
-        // Обновляем отображение карт
         catViews.forEachIndexed { index, imageView ->
             imageView.setImageResource(R.drawable.back)
             imageView.isClickable = true
-            imageView.tag = cardImages[index] // Обновляем тег для каждой карты
+            imageView.visibility = View.VISIBLE // Делаем карты видимыми
+            imageView.tag = cardImages[index]
         }
     }
 
@@ -166,21 +161,17 @@ class MainActivity : AppCompatActivity() {
     private fun showCustomToast(message: String) {
         val toast = Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT)
 
-        // Создаем TextView для кастомного Toast
         val textView = TextView(applicationContext).apply {
             text = message
-            textSize = 23f  // Устанавливаем размер текста 28
-            setTextColor(0xFF568A5A.toInt())  // Цвет текста #568A5A
+            textSize = 23f
+            setTextColor(0xFF568A5A.toInt())
             gravity = Gravity.CENTER
-            isSingleLine = true  // Устанавливаем, чтобы сообщение было в одну строку
-            ellipsize = android.text.TextUtils.TruncateAt.END // Если текст длинный, обрезаем
+            isSingleLine = true
+            ellipsize = android.text.TextUtils.TruncateAt.END
         }
 
-        toast.view = textView  // Устанавливаем кастомный TextView для Toast
-
-        // Устанавливаем расположение Toast чуть ниже (отступ 150 пикселей от верха)
-        toast.setGravity(Gravity.TOP, 0, 620)  // Установим отступ 300 пикселей от верхней части экрана
-
-        toast.show()  // Показываем Toast
+        toast.view = textView
+        toast.setGravity(Gravity.TOP, 0, 620)
+        toast.show()
     }
 }
